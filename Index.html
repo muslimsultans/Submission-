@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eFootball Player Search - PRO EFOOTBALL CLUB BD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Reset & Variables */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #0056b3; /* Darker Blue */
+            --accent-color: #28a745; /* Green */
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a2e; /* Dark Blue-Purple */
+            --card-bg: #2b2b45; /* Slightly lighter card bg */
+            --border-color: #4a4a6c;
+            --hover-scale: 1.03;
+            --transition-speed: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            background-color: var(--bg-color);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px var(--primary-color);
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: var(--text-color);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Search Section */
+        .search-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            max-width: 500px;
+        }
+
+        .search-box input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1.1em;
+            outline: none;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .search-box input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 1.4em;
+        }
+
+        .search-section button {
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+        }
+
+        .search-section button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Player Cards Grid */
+        #player-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+            justify-content: center;
+        }
+
+        .player-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+            transform: scale(1);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            opacity: 0; /* Initial state for animation */
+            animation: fadeIn 0.8s ease-out forwards; /* Fade-in animation */
+        }
+
+        .player-card:hover {
+            transform: scale(var(--hover-scale));
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6), 0 0 15px var(--primary-color);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .player-card img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .player-card:hover img {
+            transform: rotateY(15deg);
+        }
+
+        .player-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-shadow: 0 0 8px rgba(0, 123, 255, 0.7);
+        }
+
+        .player-card p {
+            font-size: 1.05em;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .player-card .player-stats {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .player-card .stat-item {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .player-card .overall-rating {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2em;
+            color: #ffda47; /* Gold */
+            text-shadow: 0 0 10px #ffda47;
+            margin-top: 15px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 0.9; }
+            to { transform: scale(1.05); opacity: 1; }
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin-top: 50px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+            .search-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .search-section button {
+                width: 100%;
+            }
+            .player-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            .search-box input[type="text"] {
+                font-size: 1em;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span style="color: white;">PRO EFOOTBALL CLUB BD</span> eFootball Player Database</h1>
+            <p>Discover detailed information about your favorite eFootball players. Search by name, position, or nationality!</p>
+        </header>
+
+        <section class="search-section">
+            <div class="search-box">
+                <input type="text" id="player-search" placeholder="Search player name, position, or nationality..." onkeyup="filterPlayers()">
+                <span class="search-icon">&#128269;</span>
+            </div>
+            <button onclick="filterPlayers()">Search Player</button>
+        </section>
+
+        <section id="player-results">
+            </section>
+
+        <p id="no-results-message" class="no-results" style="display: none;">No players found matching your search criteria.</p>
+    </div>
+
+    <footer>
+        &copy; 2025 PRO EFOOTBALL CLUB BD. All rights reserved. | Powered by eFootball Enthusiasts
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.9.1/dist/umd/supabase.min.js"></script>
+
+    <script>
+        // Supabase Configuration
+        const supabaseUrl = 'https://mtpxvaftuvribyvyfoph.supabase.co'; // আপনার Supabase Project URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10cHh2YWZ0dXZyaWJ5dnlmb3BoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTQyNzUsImV4cCI6MTczMjkzMDI3NX0.n-3m5v-5q-Xb-5Xy-Xb-5Xy-Xb-5Xy-Xb-5Xy-Xb-5Xy-Xb-5Xy-Xb-5Xy-Xb-5Xy'; // আপনার Supabase anon (public) key
+        const TABLE_NAME = 'Muslim Sultan’s'; // আপনার টেবিলের নাম
+
+        const supabase = Supabase.createClient(supabaseUrl, supabaseKey); // Supabase client তৈরি করা হয়েছে
+
+        const playerResultsDiv = document.getElementById('player-results');
+        const noResultsMessage = document.getElementById('no-results-message');
+
+        let allPlayers = []; // সকল প্লেয়ার ডেটা সংরক্ষণের জন্য গ্লোবাল ভেরিয়েবল
+
+        // প্লেয়ার কার্ডের HTML তৈরি করার ফাংশন
+        function generatePlayerCard(player) {
+            // যদি player.image_url না থাকে বা ইনভ্যালিড হয়, তাহলে একটি ফলব্যাক ইমেজ দেখাবে
+            const imageUrl = player.image_url && player.image_url.startsWith('http') ? player.image_url : 'https://placehold.co/150x150/007bff/FFFFFF?text=Player';
+
+            return `
+                <div class="player-card">
+                    <img src="${imageUrl}" alt="${player.name}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/007bff/FFFFFF?text=Player';">
+                    <h3>${player.name}</h3>
+                    <p><strong>Position:</strong> ${player.position}</p>
+                    <p><strong>Nationality:</strong> ${player.nationality}</p>
+                    <p><strong>Club:</strong> ${player.club}</p>
+                    <div class="player-stats">
+                        <span class="stat-item">Attacking: ${player.attacking}</span>
+                        <span class="stat-item">Dribbling: ${player.dribbling}</span>
+                        <span class="stat-item">Passing: ${player.passing}</span>
+                        <span class="stat-item">Speed: ${player.speed}</span>
+                        ${player.defense ? `<span class="stat-item">Defense: ${player.defense}</span>` : ''}
+                    </div>
+                    <div class="overall-rating">OVR: ${player.overall}</div>
+                </div>
+            `;
+        }
+
+        // প্লেয়ারদের UI তে ডিসপ্লে করার ফাংশন
+        function displayPlayers(players) {
+            playerResultsDiv.innerHTML = ''; // আগের রেজাল্ট মুছে ফেলুন
+            if (players.length === 0) {
+                noResultsMessage.style.display = 'block';
+            } else {
+                noResultsMessage.style.display = 'none';
+                players.forEach(player => {
+                    playerResultsDiv.innerHTML += generatePlayerCard(player);
+                });
+            }
+        }
+
+        // Supabase থেকে প্লেয়ার ডেটা আনার ফাংশন
+        async function fetchPlayersFromSupabase() {
+            try {
+                // আপনার টেবিলের নাম এখানে ব্যবহার করা হয়েছে ('Muslim Sultan’s')
+                const { data, error } = await supabase
+                    .from(TABLE_NAME)
+                    .select('*'); // সকল কলামের ডেটা সিলেক্ট করুন
+
+                if (error) {
+                    console.error("Error fetching players from Supabase:", error);
+                    noResultsMessage.style.display = 'block';
+                    noResultsMessage.textContent = 'Failed to load players. Please check your Supabase connection, RLS policies, and table name.';
+                    return [];
+                }
+                return data;
+            } catch (error) {
+                console.error("Unexpected error fetching players:", error);
+                noResultsMessage.style.display = 'block';
+                noResultsMessage.textContent = 'An unexpected error occurred. Please try again later.';
+                return [];
+            }
+        }
+
+        // সার্চ টার্ম অনুযায়ী প্লেয়ারদের ফিল্টার করার ফাংশন
+        async function filterPlayers() {
+            // যদি allPlayers অ্যারে খালি থাকে, তাহলে Supabase থেকে ডেটা লোড করুন
+            if (allPlayers.length === 0) {
+                allPlayers = await fetchPlayersFromSupabase();
+            }
+
+            const searchTerm = document.getElementById('player-search').value.toLowerCase();
+            const filtered = allPlayers.filter(player =>
+                // প্লেয়ারের নাম, পজিশন, জাতিগত পরিচয়, বা ক্লাবের সাথে সার্চ টার্ম মিলেছে কিনা চেক করুন
+                player.name.toLowerCase().includes(searchTerm) ||
+                player.position.toLowerCase().includes(searchTerm) ||
+                player.nationality.toLowerCase().includes(searchTerm) ||
+                player.club.toLowerCase().includes(searchTerm)
+            );
+            displayPlayers(filtered); // ফিল্টার করা প্লেয়ারদের ডিসপ্লে করুন
+        }
+
+        // পেজ লোড হওয়ার সাথে সাথে প্লেয়ারদের লোড করার জন্য
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Supabase থেকে সকল প্লেয়ার ডেটা ফেচ করুন এবং allPlayers ভেরিয়েবলে রাখুন
+            allPlayers = await fetchPlayersFromSupabase();
+            // প্রাথমিকভাবে সকল প্লেয়ারকে ডিসপ্লে করুন
+            displayPlayers(allPlayers);
+        });
+    </script>
+</body>
+</html>
